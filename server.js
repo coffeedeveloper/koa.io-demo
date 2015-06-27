@@ -3,7 +3,7 @@ var path = require('path');
 var fs = require('fs');
 var koa = require('koa.io');
 
-var port = process.env.PORT || 3000;
+var port = process.env.PORT || 3030;
 
 var app = koa();
 
