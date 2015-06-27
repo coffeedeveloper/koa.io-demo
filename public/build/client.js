@@ -94,6 +94,7 @@
 	      };
 	    },
 	    touchmove: function touchmove(e) {
+	      e.preventDefault();
 	      var touches = e.originalEvent.touches;
 	      points.end = {
 	        x: touches[0].pageX,
