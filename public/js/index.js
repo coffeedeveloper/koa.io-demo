@@ -41,6 +41,7 @@ if (cup.is.mobile()) {
       };
     },
     touchmove: function (e) {
+      e.preventDefault();
       var touches = e.originalEvent.touches;
       points.end = {
         x: touches[0].pageX,
