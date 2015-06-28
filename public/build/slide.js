@@ -1297,4 +1297,4 @@
 
 /***/ }
 /******/ ]);
-//# sourceMappingURL=client.js.map
+//# sourceMappingURL=slide.js.map

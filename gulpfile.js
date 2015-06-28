@@ -20,10 +20,13 @@ gulp.task('stylus', function () {
 
 gulp.task('webpack', function (callback) {
   webpack({
-    entry: './public/js/index.js',
+    entry: {
+      slide: './public/js/slide.js',
+      canvas: './public/js/canvas.js'
+    },
     output: {
       path: './public/build',
-      filename: 'client.js'
+      filename: '[name].js'
     },
     module: {
       loaders: [
