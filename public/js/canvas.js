@@ -77,7 +77,7 @@ $(function () {
 
     $('#btn-clear').on('click', function () {
       clearCanvas();
-      socket.emit('order', {type: 'clear'});
+      socket.emit('order', roomName, {type: 'clear'});
     });
 
     var lastLoc = {};
