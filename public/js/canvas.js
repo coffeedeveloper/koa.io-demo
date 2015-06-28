@@ -75,7 +75,7 @@ $(function () {
   if (cup.is.mobile()) {
     $('#qrcode').remove();
 
-    $('#btn-clear').on('click', function () {
+    $('#btn-clear').show().on('click', function () {
       clearCanvas();
       socket.emit('order', roomName, {type: 'clear'});
     });
@@ -89,6 +89,7 @@ $(function () {
           x: touches[0].pageX,
           y: touches[0].pageY
         };
+
         saveSurface();
         drawStart(loc);
         socket.emit('order', roomName, {type: 'start', loc});
@@ -112,7 +113,6 @@ $(function () {
       }
     });
   } else {
-    $('#btn-clear').remove();
     socket.on('joined', function (msg) {
       $('#qrcode').hide();
     });
