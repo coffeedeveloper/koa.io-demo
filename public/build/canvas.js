@@ -150,7 +150,7 @@
 	        e.preventDefault();
 	        restoreSurface();
 	        drawEnd(lastLoc);
-	        socket.emit('order', roomName, { type: 'end', loc: loc });
+	        socket.emit('order', roomName, { type: 'end', loc: lastLoc });
 	      }
 	    });
 	  } else {
@@ -166,6 +166,7 @@
 	    });
 	
 	    socket.on('order', function (ord) {
+	      console.log(ord);
 	      switch (ord.type) {
 	        case 'start':
 	          saveSurface();
