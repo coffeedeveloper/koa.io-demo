@@ -596,7 +596,6 @@
 
         }, false);
 
-        /*
         // Adding hash change support.
         root.addEventListener("impress:init", function(){
 
@@ -628,7 +627,6 @@
             // by selecting step defined in url or first step of the presentation
             goto(getElementFromHash() || steps[0], 0);
         }, false);
-        */
         body.classList.add("impress-disabled");
 
         // store and return API for given impress.js root element
