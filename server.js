@@ -38,8 +38,8 @@ app.io.route('leave', function *(next, room) {
   this.leave(room);
 });
 
-app.io.route('order', function *(next, room, dir) {
-  this.to(room).emit('order', dir);
+app.io.route('order', function *(next, room, order) {
+  this.to(room).emit('order', order);
 });
 
 app.listen(port, function () {

@@ -122,6 +122,7 @@
 	          y: touches[0].pageY
 	        };
 	        drawStart(loc);
+	        socket.emit('order', roomName, { type: 'start', loc: loc });
 	      },
 	      touchmove: function touchmove(e) {
 	        e.preventDefault();
@@ -132,10 +133,12 @@
 	        };
 	        lastLoc = loc;
 	        drawMove(loc);
+	        socket.emit('order', roomName, { type: 'move', loc: loc });
 	      },
 	      touchend: function touchend(e) {
 	        e.preventDefault();
 	        drawEnd(lastLoc);
+	        socket.emit('order', roomName, { type: 'end', loc: loc });
 	      }
 	    });
 	  } else {
@@ -148,6 +151,20 @@
 	    $('#qrcode').qrcode({
 	      text: qrurl,
 	      size: 200
+	    });
+	
+	    socket.on('order', function (ord) {
+	      switch (ord.type) {
+	        case 'start':
+	          drawStart(ord.loc);
+	          break;
+	        case 'move':
+	          drawMove(ord.loc);
+	          break;
+	        case 'end':
+	          drawEnd(ord.loc);
+	          break;
+	      }
 	    });
 	
 	    $canvas.on({

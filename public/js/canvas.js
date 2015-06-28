@@ -68,6 +68,7 @@ $(function () {
           y: touches[0].pageY
         };
         drawStart(loc);
+        socket.emit('order', roomName, {type: 'start', loc});
       },
       touchmove: function (e) {
         e.preventDefault();
@@ -78,10 +79,12 @@ $(function () {
         };
         lastLoc = loc;
         drawMove(loc);
+        socket.emit('order', roomName, {type: 'move', loc});
       },
       touchend: function (e) {
         e.preventDefault();
         drawEnd(lastLoc);
+        socket.emit('order', roomName, {type: 'end', loc});
       }
     });
   } else {
@@ -94,6 +97,20 @@ $(function () {
     $('#qrcode').qrcode({
       text: qrurl,
       size: 200
+    });
+
+    socket.on('order', (ord) => {
+      switch (ord.type) {
+        case 'start':
+          drawStart(ord.loc);
+          break;
+        case 'move':
+          drawMove(ord.loc);
+          break;
+        case 'end':
+          drawEnd(ord.loc);
+          break;
+      }
     });
 
     $canvas.on({
