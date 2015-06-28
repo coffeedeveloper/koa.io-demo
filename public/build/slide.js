@@ -116,7 +116,7 @@
 	    }
 	  });
 	
-	  var qrurl = location.protocol + '//' + location.host + '?roomName=' + roomName;
+	  var qrurl = location.protocol + '//' + location.host + location.pathname + '?roomName=' + roomName;
 	  console.log(qrurl);
 	  $('#qrcode').qrcode({
 	    text: qrurl,

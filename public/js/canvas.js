@@ -1,6 +1,40 @@
-import $ from 'jquery';
+import Qs from 'qs';
+import cup from 'cupjs';
 
 $(function () {
+  var socket = io();
+  var roomName = cup.guid(true);
+
+  const querystring = location.search && location.search.substr(1);
+  var urlParams = {};
+
+  if (querystring) {
+    urlParams = Qs.parse(querystring);
+    console.log(urlParams);
+    if (urlParams.roomName) {
+      roomName = urlParams.roomName;
+    }
+  }
+
+  console.log(roomName);
+  socket.emit('join', roomName);
+
+  if (cup.is.mobile()) {
+    $('#qrcode').remove();
+
+  } else {
+    socket.on('joined', function (msg) {
+      $('#qrcode').hide();
+    });
+
+    var qrurl = `${location.protocol}//${location.host}${location.pathname}?roomName=${roomName}`;
+    console.log(qrurl);
+    $('#qrcode').qrcode({
+      text: qrurl,
+      size: 200
+    });
+  }
+
   var $canvas = $('#canvas');
   var canvas = $canvas[0];
   var context = canvas.getContext('2d');

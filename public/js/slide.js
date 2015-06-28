@@ -3,7 +3,6 @@ import cup from 'cupjs';
 
 var roomName = cup.guid(true);
 
-
 console.log(roomName);
 
 const querystring = location.search && location.search.substr(1);
@@ -65,7 +64,7 @@ if (cup.is.mobile()) {
     }
   });
 
-  var qrurl = location.protocol + '//' + location.host + '?roomName=' + roomName;
+  var qrurl = `${location.protocol}//${location.host}${location.pathname}?roomName=${roomName}`;
   console.log(qrurl);
   $('#qrcode').qrcode({
     text: qrurl,
