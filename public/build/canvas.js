@@ -74,21 +74,7 @@
 	  console.log(roomName);
 	  socket.emit('join', roomName);
 	
-	  if (_cupjs2['default'].is.mobile()) {
-	    $('#qrcode').remove();
-	  } else {
-	    socket.on('joined', function (msg) {
-	      $('#qrcode').hide();
-	    });
-	
-	    var qrurl = location.protocol + '//' + location.host + location.pathname + '?roomName=' + roomName;
-	    console.log(qrurl);
-	    $('#qrcode').qrcode({
-	      text: qrurl,
-	      size: 200
-	    });
-	  }
-	
+	  /*canvas*/
 	  var $canvas = $('#canvas');
 	  var canvas = $canvas[0];
 	  var context = canvas.getContext('2d');
@@ -98,6 +84,7 @@
 	    canvas.height = $(window).height();
 	  };
 	  resizeCanvas();
+	
 	  $(window).on('resize', resizeCanvas);
 	
 	  var dragging = false;
@@ -123,27 +110,68 @@
 	    context.closePath();
 	  };
 	
-	  $canvas.on({
-	    mousedown: function mousedown(e) {
-	      e.preventDefault();
-	      dragging = true;
-	      var loc = getLoc(e);
-	      drawStart(loc);
-	    },
-	    mousemove: function mousemove(e) {
-	      e.preventDefault();
-	      if (dragging) {
-	        var loc = getLoc(e);
+	  if (_cupjs2['default'].is.mobile()) {
+	    $('#qrcode').remove();
+	    var lastLoc = {};
+	    $canvas.on({
+	      touchstart: function touchstart(e) {
+	        e.preventDefault();
+	        var touches = e.originalEvent.touches;
+	        var loc = {
+	          x: touches[0].pageX,
+	          y: touches[0].pageY
+	        };
+	        drawStart(loc);
+	      },
+	      touchmove: function touchmove(e) {
+	        e.preventDefault();
+	        var touches = e.originalEvent.touches;
+	        var loc = {
+	          x: touches[0].pageX,
+	          y: touches[0].pageY
+	        };
+	        lastLoc = loc;
 	        drawMove(loc);
+	      },
+	      touchend: function touchend(e) {
+	        e.preventDefault();
+	        drawEnd(lastLoc);
 	      }
-	    },
-	    mouseup: function mouseup(e) {
-	      e.preventDefault();
-	      dragging = false;
-	      var loc = getLoc(e);
-	      drawEnd(loc);
-	    }
-	  });
+	    });
+	  } else {
+	    socket.on('joined', function (msg) {
+	      $('#qrcode').hide();
+	    });
+	
+	    var qrurl = location.protocol + '//' + location.host + location.pathname + '?roomName=' + roomName;
+	    console.log(qrurl);
+	    $('#qrcode').qrcode({
+	      text: qrurl,
+	      size: 200
+	    });
+	
+	    $canvas.on({
+	      mousedown: function mousedown(e) {
+	        e.preventDefault();
+	        dragging = true;
+	        var loc = getLoc(e);
+	        drawStart(loc);
+	      },
+	      mousemove: function mousemove(e) {
+	        e.preventDefault();
+	        if (dragging) {
+	          var loc = getLoc(e);
+	          drawMove(loc);
+	        }
+	      },
+	      mouseup: function mouseup(e) {
+	        e.preventDefault();
+	        dragging = false;
+	        var loc = getLoc(e);
+	        drawEnd(loc);
+	      }
+	    });
+	  }
 	});
 
 /***/ },
