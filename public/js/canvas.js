@@ -50,6 +50,11 @@ $(function () {
     context.putImageData(drawSurfaceData, 0, 0);
   };
 
+  var clearCanvas = () => {
+    context.clearRect(0, 0, canvas.width, canvas.height);
+    saveSurface();
+  };
+
   var drawStart = (loc) => {
     context.beginPath();
     context.moveTo(loc.x, loc.y);
@@ -66,8 +71,15 @@ $(function () {
     context.closePath();
   };
 
+
   if (cup.is.mobile()) {
     $('#qrcode').remove();
+
+    $('#btn-clear').on('click', function () {
+      clearCanvas();
+      socket.emit('order', {type: 'clear'});
+    });
+
     var lastLoc = {};
     $canvas.on({
       touchstart: function (e) {
@@ -100,6 +112,7 @@ $(function () {
       }
     });
   } else {
+    $('#btn-clear').remove();
     socket.on('joined', function (msg) {
       $('#qrcode').hide();
     });
@@ -124,6 +137,9 @@ $(function () {
         case 'end':
           restoreSurface();
           drawEnd(ord.loc);
+          break;
+        case 'clear':
+          clearCanvas();
           break;
       }
     });
