@@ -77,6 +77,7 @@ $(function () {
           x: touches[0].pageX,
           y: touches[0].pageY
         };
+        saveSurface();
         drawStart(loc);
         socket.emit('order', roomName, {type: 'start', loc});
       },
@@ -93,6 +94,7 @@ $(function () {
       },
       touchend: function (e) {
         e.preventDefault();
+        restoreSurface();
         drawEnd(lastLoc);
         socket.emit('order', roomName, {type: 'end', loc});
       }
@@ -112,12 +114,14 @@ $(function () {
     socket.on('order', (ord) => {
       switch (ord.type) {
         case 'start':
+          saveSurface();
           drawStart(ord.loc);
           break;
         case 'move':
           drawMove(ord.loc);
           break;
         case 'end':
+          restoreSurface();
           drawEnd(ord.loc);
           break;
       }
