@@ -40,6 +40,16 @@ $(function () {
     return { x, y };
   };
 
+  var drawSurfaceData;
+
+  var saveSurface = () => {
+    drawSurfaceData = context.getImageData(0, 0, canvas.width, canvas.height);
+  };
+
+  var restoreSurface = () => {
+    context.putImageData(drawSurfaceData, 0, 0);
+  };
+
   var drawStart = (loc) => {
     context.beginPath();
     context.moveTo(loc.x, loc.y);
@@ -117,6 +127,7 @@ $(function () {
       mousedown: function (e) {
         e.preventDefault();
         dragging = true;
+        saveSurface();
         let loc = getLoc(e);
         drawStart(loc);
       },
@@ -130,6 +141,7 @@ $(function () {
       mouseup: function (e) {
         e.preventDefault();
         dragging = false;
+        restoreSurface();
         let loc = getLoc(e);
         drawEnd(loc);
       }

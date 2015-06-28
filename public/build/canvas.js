@@ -94,6 +94,16 @@
 	    return { x: x, y: y };
 	  };
 	
+	  var drawSurfaceData;
+	
+	  var saveSurface = function saveSurface() {
+	    drawSurfaceData = context.getImageData(0, 0, canvas.width, canvas.height);
+	  };
+	
+	  var restoreSurface = function restoreSurface() {
+	    context.putImageData(drawSurfaceData, 0, 0);
+	  };
+	
 	  var drawStart = function drawStart(loc) {
 	    context.beginPath();
 	    context.moveTo(loc.x, loc.y);
@@ -171,6 +181,7 @@
 	      mousedown: function mousedown(e) {
 	        e.preventDefault();
 	        dragging = true;
+	        saveSurface();
 	        var loc = getLoc(e);
 	        drawStart(loc);
 	      },
@@ -184,6 +195,7 @@
 	      mouseup: function mouseup(e) {
 	        e.preventDefault();
 	        dragging = false;
+	        restoreSurface();
 	        var loc = getLoc(e);
 	        drawEnd(loc);
 	      }
