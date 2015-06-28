@@ -120,7 +120,7 @@
 	  });
 	
 	  socket.on('order', function (dir) {
-	    if (dir == 'left') {
+	    if (dir == 'right') {
 	      slide.prev();
 	    } else {
 	      slide.next();
