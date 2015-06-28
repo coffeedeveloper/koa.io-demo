@@ -73,14 +73,12 @@
 	
 	console.log(roomName);
 	
-	var $output = $('#output');
-	var $app = $('#app');
-	
 	var socket = io();
 	
 	socket.emit('join', roomName);
 	
 	if (_cupjs2['default'].is.mobile()) {
+	  $('#impress').hide();
 	  var points = {
 	    start: {},
 	    end: {}
@@ -108,12 +106,10 @@
 	  });
 	  if (urlParams.guid) {}
 	} else {
-	
+	  var slide = impress();
+	  slide.init();
 	  socket.on('joined', function (msg) {
-	    $('#qrcode').hide();
-	    for (var i = 0; i < 100; i++) {
-	      $app.append('<div data-i="' + i + '" class="slide z' + (100 - i) + '">' + i + '</div>');
-	    }
+	    $('#mask').fadeOut();
 	  });
 	
 	  var qrurl = location.protocol + '//' + location.host + location.pathname + '?roomName=' + roomName;
@@ -123,13 +119,12 @@
 	    size: 200
 	  });
 	
-	  var current = 0;
-	
 	  socket.on('order', function (dir) {
-	    console.log('in order');
-	    console.log(dir);
-	    $('.slide[data-i="' + current + '"]').addClass(dir);
-	    current++;
+	    if (dir == 'left') {
+	      slide.prev();
+	    } else {
+	      slide.next();
+	    }
 	  });
 	}
 

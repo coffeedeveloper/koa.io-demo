@@ -10,11 +10,15 @@ var app = koa();
 
 router
   .get('/', function *(next) {
-    this.body = fs.createReadStream(path.join(__dirname, 'public/slide.html'));
+    this.body = fs.createReadStream(path.join(__dirname, 'public/impress.html'));
     this.type = 'html';
   })
   .get('/canvas', function *(next) {
     this.body = fs.createReadStream(path.join(__dirname, 'public/canvas.html'));
+    this.type = 'html';
+  })
+  .get('/impress', function *(next) {
+    this.body = fs.createReadStream(path.join(__dirname, 'public/impress.html'));
     this.type = 'html';
   });
 
