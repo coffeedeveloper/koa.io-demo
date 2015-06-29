@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no">
+    <meta name="render" content="webkit">
+    <title>重力感应</title>
+  </head>
+  <body>
+    <div id="log">
+    </div>
+
+    <script type="text/javascript" charset="utf-8">
+      var log = document.querySelector('#log');
+      if (window.DeviceOrientationEvent) {
+        log.innerHTML = '支持重力感应';
+        window.addEventListener('deviceorientation', function (e) {
+          var info = 'gamma: ' + e.gamma + '<br />';
+          info += 'beta: ' + e.bata + '<br />';
+          info += 'alpha: ' + e.alpha;
+          log.innerHTML = info;
+        });
+      } else {
+        log.innerHTML = '不支持重力感应';
+      }
+    </script>
+  </body>
+</html>

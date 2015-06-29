@@ -41,16 +41,10 @@ gulp.task('webpack', function (callback) {
   }, function (err, stats) {
     if(err) throw new gutil.PluginError('webpack', err);
     util.log('[webpack]', stats.toString({
-        // output options
+      colors: true,
+      chunks: false
     }));
-    //callback();
   });
-
-  // new WebPackDevServer(compiler, {})
-  //   .listen(8099, 'localhost', function (err, callback) {
-  //     if(err) throw new util.PluginError("webpack-dev-server", err);
-  //     util.log('[webpack-dev-server]', 'http://localhost:8099/webpack-dev-server/index.html');
-  //   });
 });
 
 gulp.task('nodemon', function () {

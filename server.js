@@ -20,6 +20,10 @@ router
   .get('/impress', function *(next) {
     this.body = fs.createReadStream(path.join(__dirname, 'public/impress.html'));
     this.type = 'html';
+  })
+  .get('/orientation', function *(next) {
+    this.body = fs.createReadStream(path.join(__dirname, 'public/orientation.html'));
+    this.type = 'html';
   });
 
 app.use(staticCache(path.join(__dirname, 'public')));
