@@ -58,6 +58,7 @@
           var prop = 'translate(0, ' + ((max * p) * (dir == 'left' ? -1 : 1) ) + 'px)';
           console.log(prop);
           ball.style.transform = prop;
+          ball.style.webkitTransform = prop;
 
         });
       } else {
