@@ -130,7 +130,8 @@
 	        var o = {
 	          gamma: e.gamma,
 	          beta: e.beta,
-	          alpha: e.alpha
+	          alpha: e.alpha,
+	          date: new Date()
 	        };
 	
 	        $ball.css('transform', move(o));
@@ -156,8 +157,17 @@
 	      size: 200
 	    });
 	
+	    var lastDate = null;
 	    socket.on('order', function (e) {
-	      $ball.css('transform', move(e));
+	      if (lastDate === null) {
+	        lastDate = e;
+	      }
+	
+	      if (e.date >= lastDate) {
+	        $ball.css('transform', move(e));
+	      }
+	
+	      lastDate = e.date;
 	    });
 	  }
 	});
