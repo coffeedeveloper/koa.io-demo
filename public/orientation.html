@@ -50,14 +50,22 @@
 
           console.log(e.beta);
 
-          var dir = e.beta < 0 ? 'left' : 'right';
+          var lr = e.gamma < 0 ? 'left' : 'right';
+          var fb = e.beta < 0 ? 'front' : 'back';
 
-          var p = Math.abs(e.beta) / 45;
-          if (p > 1) p = 1;
+          var pfb = Math.abs(e.beta) / 45;
+          if (pfb > 1) pfb = 1;
 
-          var max = (win.y * 0.5) - 40;
+          var plr = Math.abs(e.gamma) / 45;
+          if (plr > 1) plr = 1;
 
-          var prop = 'translate(0, ' + ((max * p) * (dir == 'left' ? -1 : 1) ) + 'px)';
+          var maxx = (win.x * 0.5) - 40;
+          var maxy = (win.y * 0.5) - 40;
+
+          var x = (maxx * plr) * (lr == 'left' ? -1 : 1);
+          var y = (maxy * pfb) * (fb == 'front' ? -1 : 1);
+
+          var prop = 'translate(' + x + 'px, ' + y + 'px)';
           console.log(prop);
 
           $ball.css('transform', prop);
