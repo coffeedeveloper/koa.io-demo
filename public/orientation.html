@@ -14,8 +14,8 @@
         background: red;
         border-radius: 80px;
         left: 50%;
-        margin-left: -40px;
         top: 50%;
+        margin: -40px 0 0 -40px;
       }
     </style>
 
@@ -30,6 +30,10 @@
     <script type="text/javascript" charset="utf-8">
       var log = document.querySelector('#log');
       var ball = document.querySelector('.ball');
+      var win = {
+        x: window.outerWidth,
+        y: window.outerHeight
+      };
       if (window.DeviceOrientationEvent) {
         log.innerHTML = '支持重力感应';
         window.addEventListener('deviceorientation', function (e) {
@@ -41,18 +45,15 @@
           console.log(e.beta);
 
           var dir = e.beta < 0 ? 'left' : 'right';
-          var p = 0;
 
-          var x = Math.abs(e.beta) / 45;
-          if (x > 1) x = 1;
+          var p = Math.abs(e.beta) / 45;
+          if (p > 1) p = 1;
 
-          if (dir == 'left') {
-            ball.style.bottom = 'auto';
-            ball.style.top = (50 - (50 * x)) + '%';
-          } else {
-            ball.style.top = 'auto';
-            ball.style.bottom = (50 - (50 * x)) + '%';
-          }
+          var max = (win.y * 0.5) - 40;
+
+          var prop = 'translate(0, ' + ((max * p) * (dir == 'left' ? -1 : 1) ) + 'px)';
+          console.log(prop);
+          ball.style.transform = prop;
 
         });
       } else {
