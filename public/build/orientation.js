@@ -116,6 +116,9 @@
 	
 	  if (_cupjs2['default'].is.mobile()) {
 	    $('#mask').hide();
+	
+	    var orders = [];
+	
 	    if (window.DeviceOrientationEvent) {
 	      $(window).on('deviceorientation', function (event) {
 	        var e = event.originalEvent;
@@ -131,9 +134,16 @@
 	        };
 	
 	        $ball.css('transform', move(o));
-	        socket.emit('order', roomName, o);
+	        orders.push(o);
 	      });
 	    }
+	
+	    setInterval(function () {
+	      var o = orders.shift();
+	      if (o) {
+	        socket.emit('order', roomName, o);
+	      }
+	    }, 20);
 	  } else {
 	    socket.on('joined', function (msg) {
 	      $('#mask').fadeOut();

@@ -41,7 +41,6 @@ $(function() {
     `);
   }
 
-
   var move = (e) => {
     var lr = e.gamma < 0 ? 'left' : 'right';
     var fb = e.beta < 0 ? 'front' : 'back';
@@ -66,6 +65,9 @@ $(function() {
 
   if (cup.is.mobile()) {
     $('#mask').hide();
+
+    var orders = [];
+
     if (window.DeviceOrientationEvent) {
       $(window).on('deviceorientation', function(event) {
         var e = event.originalEvent;
@@ -77,7 +79,7 @@ $(function() {
             alpha: ${e.alpha}
           `);
         }
-        
+
         var o = {
           gamma: e.gamma,
           beta: e.beta,
@@ -85,9 +87,16 @@ $(function() {
         };
 
         $ball.css('transform', move(o));
-        socket.emit('order', roomName, o);
+        orders.push(o);
       });
     }
+
+    setInterval(() => {
+      var o = orders.shift();
+      if (o) {
+        socket.emit('order', roomName, o);
+      }
+    }, 20);
   } else {
     socket.on('joined', function(msg) {
       $('#mask').fadeOut();
