@@ -6,13 +6,29 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no">
     <meta name="render" content="webkit">
     <title>重力感应</title>
+    <style>
+      .ball {
+        position: fixed;
+        height: 80px;
+        width: 80px;
+        background: red;
+        border-radius: 80px;
+        top: 50%;
+        margin-top: -40px;
+      }
+    </style>
+
   </head>
   <body>
+
+    <div class="ball"></div>
+
     <div id="log">
     </div>
 
     <script type="text/javascript" charset="utf-8">
       var log = document.querySelector('#log');
+      var ball = document.querySelector('.ball');
       if (window.DeviceOrientationEvent) {
         log.innerHTML = '支持重力感应';
         window.addEventListener('deviceorientation', function (e) {
@@ -20,6 +36,19 @@
           info += 'beta: ' + e.beta + '<br />';
           info += 'alpha: ' + e.alpha;
           log.innerHTML = info;
+
+          var dir = e.beta < 0 ? 'left' : 'right';
+          var p = 0;
+
+          var x = Math.abs(e.beta) / 45;
+          if (x > 1) x = 1;
+
+          if (dir == 'left') {
+            ball.style.left = (50 - (50 * p)) + '%';
+          } else {
+            ball.style.right = (50 - (50 * p)) + '%';
+          }
+
         });
       } else {
         log.innerHTML = '不支持重力感应';
