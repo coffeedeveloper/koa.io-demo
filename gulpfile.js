@@ -22,7 +22,8 @@ gulp.task('webpack', function (callback) {
   webpack({
     entry: {
       slide: './public/js/slide.js',
-      canvas: './public/js/canvas.js'
+      canvas: './public/js/canvas.js',
+      orientation: './public/js/orientation.js'
     },
     output: {
       path: './public/build',

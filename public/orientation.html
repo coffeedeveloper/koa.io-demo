@@ -7,73 +7,23 @@
     <meta name="render" content="webkit">
     <title>重力感应</title>
     <script type="text/javascript" src="/js/jquery-2.1.4.min.js"></script>
-    <style>
-      .ball {
-        position: fixed;
-        height: 80px;
-        width: 80px;
-        background: red;
-        border-radius: 80px;
-        left: 50%;
-        top: 50%;
-        margin: -40px 0 0 -40px;
-      }
-    </style>
+    <link href="build/orientation.css" rel="stylesheet" />
 
   </head>
   <body>
 
     <div class="ball"></div>
 
-    <div id="log2"></div>
     <div id="log">
+      <div class="sys"></div>
+      <div class="info"></div>
     </div>
 
+    <script type="text/javascript" src="/js/jquery.qrcode.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="/build/orientation.js"></script>
+
     <script type="text/javascript" charset="utf-8">
-      var log = document.querySelector('#log');
-      var log2 = document.querySelector('#log2');
-      var ball = document.querySelector('.ball');
-      var $ball = $('.ball');
-      var win = {
-        x: $(window).width(),
-        y: $(window).height()
-      };
-      log2.innerHTML = 'window width:' + win.x + '<br />';
-      log2.innerHTML += 'window height:' + win.y;
-      if (window.DeviceOrientationEvent) {
-        log.innerHTML = '支持重力感应';
-        window.addEventListener('deviceorientation', function (e) {
-          var info = 'gamma: ' + e.gamma + '<br />';
-          info += 'beta: ' + e.beta + '<br />';
-          info += 'alpha: ' + e.alpha;
-          log.innerHTML = info;
-
-          console.log(e.beta);
-
-          var lr = e.gamma < 0 ? 'left' : 'right';
-          var fb = e.beta < 0 ? 'front' : 'back';
-
-          var pfb = Math.abs(e.beta) / 45;
-          if (pfb > 1) pfb = 1;
-
-          var plr = Math.abs(e.gamma) / 45;
-          if (plr > 1) plr = 1;
-
-          var maxx = (win.x * 0.5) - 40;
-          var maxy = (win.y * 0.5) - 40;
-
-          var x = (maxx * plr) * (lr == 'left' ? -1 : 1);
-          var y = (maxy * pfb) * (fb == 'front' ? -1 : 1);
-
-          var prop = 'translate(' + x + 'px, ' + y + 'px)';
-          console.log(prop);
-
-          $ball.css('transform', prop);
-
-        }, false);
-      } else {
-        log.innerHTML = '不支持重力感应';
-      }
     </script>
   </body>
 </html>
