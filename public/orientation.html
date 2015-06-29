@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no">
     <meta name="render" content="webkit">
     <title>重力感应</title>
+    <script type="text/javascript" src="/js/jquery-2.1.4.min.js"></script>
     <style>
       .ball {
         position: fixed;
@@ -32,9 +33,10 @@
       var log = document.querySelector('#log');
       var log2 = document.querySelector('#log2');
       var ball = document.querySelector('.ball');
+      var $ball = $('.ball');
       var win = {
-        x: window.screen.width,
-        y: window.screen.height
+        x: $(window).width(),
+        y: $(window).height()
       };
       log2.innerHTML = 'window width:' + win.x + '<br />';
       log2.innerHTML += 'window height:' + win.y;
@@ -57,10 +59,10 @@
 
           var prop = 'translate(0, ' + ((max * p) * (dir == 'left' ? -1 : 1) ) + 'px)';
           console.log(prop);
-          ball.style.transform = prop;
-          ball.style.webkitTransform = prop;
 
-        });
+          $ball.css('transform', prop);
+
+        }, false);
       } else {
         log.innerHTML = '不支持重力感应';
       }
