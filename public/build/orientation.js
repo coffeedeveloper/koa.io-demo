@@ -164,7 +164,9 @@
 	      }
 	
 	      if (e.date >= lastDate) {
-	        $ball.css('transform', move(e));
+	        requestAnimationFrame(function () {
+	          $ball.css('transform', move(e));
+	        });
 	      }
 	
 	      lastDate = e.date;
