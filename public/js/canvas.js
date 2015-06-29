@@ -189,14 +189,14 @@ $(function () {
       console.log(ord);
       switch (ord.type) {
         case 'start':
-          saveSurface();
+          saveSurface(ord.direction);
           drawStart(ord.direction, ord.loc);
           break;
         case 'move':
           drawMove(ord.direction, ord.loc);
           break;
         case 'end':
-          restoreSurface();
+          restoreSurface(ord.direction);
           drawEnd(ord.direction, ord.loc);
           break;
         case 'clear':
