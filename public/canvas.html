@@ -10,9 +10,19 @@
   </head>
   <body>
     <div id="app">
-      <canvas id="canvas" width="300" height="300"></canvas>
-    </div>
-    <div id="qrcode">
+      <div class="left">
+        <canvas id="canvas-left" width="300" height="300"></canvas>
+        <div id="qrcode-left" class="qrcode">
+        </div>
+      </div>
+      <div class="right">
+        <canvas id="canvas-right" width="300" height="300"></canvas>
+        <div id="qrcode-right" class="qrcode">
+        </div>
+      </div>
+      <div class="center">
+        <canvas id="canvas-center" width="300" height="300"></canvas>
+      </div>
     </div>
 
     <button type="button" id="btn-clear">清空</button>

@@ -6,8 +6,25 @@
 html, body, #app
   height 100%
 
-#qrcode
-  position fixed
+#app
+  position relative
+  > div
+    position absolute
+    top 0
+    bottom 0
+  .left
+    left 0
+    right 50%
+  .right
+    right 0
+    left 50%
+  .center
+    display none
+    left 0
+    right 0
+
+.qrcode
+  position absolute
   top 50%
   left 50%
   margin -110px 0 0 -110px

@@ -4,6 +4,7 @@ import cup from 'cupjs';
 $(function () {
   var socket = io();
   var roomName = cup.guid(true);
+  var direction = '';
 
   const querystring = location.search && location.search.substr(1);
   var urlParams = {};
@@ -14,20 +15,46 @@ $(function () {
     if (urlParams.roomName) {
       roomName = urlParams.roomName;
     }
+    if (urlParams.direction) {
+      direction = urlParams.direction;
+    }
   }
 
   console.log(roomName);
-  socket.emit('join', roomName);
+  socket.emit('join', roomName, direction);
 
 
   /*canvas*/
-  var $canvas = $('#canvas');
-  var canvas = $canvas[0];
-  var context = canvas.getContext('2d');
+  var canvasObj = {
+    center: {
+      $canvas: $('#canvas-center'),
+      canvas: $('#canvas-center')[0],
+      context: $('#canvas-center')[0].getContext('2d'),
+      data: ''
+    },
+    left: {
+      $canvas: $('#canvas-left'),
+      canvas: $('#canvas-left')[0],
+      context: $('#canvas-left')[0].getContext('2d'),
+      data: ''
+    },
+    right: {
+      $canvas: $('#canvas-right'),
+      canvas: $('#canvas-right')[0],
+      context: $('#canvas-right')[0].getContext('2d'),
+      data: ''
+    }
+  };
 
   var resizeCanvas = () => {
-    canvas.width = $(window).width();
-    canvas.height = $(window).height();
+    canvasObj.left.canvas.width = canvasObj.left.$canvas.parent().width();
+    canvasObj.left.canvas.height = canvasObj.left.$canvas.parent().height();
+
+    canvasObj.right.canvas.width = canvasObj.right.$canvas.parent().width();
+    canvasObj.right.canvas.height = canvasObj.right.$canvas.parent().height();
+
+    canvasObj.center.canvas.width = canvasObj.center.$canvas.parent().width();
+    canvasObj.center.canvas.height = canvasObj.center.$canvas.parent().height();
   };
   resizeCanvas();
 
@@ -40,48 +67,59 @@ $(function () {
     return { x, y };
   };
 
-  var drawSurfaceData;
 
-  var saveSurface = () => {
-    drawSurfaceData = context.getImageData(0, 0, canvas.width, canvas.height);
+  var saveSurface = (dir) => {
+    canvasObj[dir].data = canvasObj[dir].context.getImageData(0, 0,
+      canvasObj[dir].canvas.width, canvasObj[dir].canvas.height);
   };
 
-  var restoreSurface = () => {
-    context.putImageData(drawSurfaceData, 0, 0);
+  var restoreSurface = (dir) => {
+    canvasObj[dir].context.putImageData(canvasObj[dir].data, 0, 0);
   };
 
-  var clearCanvas = () => {
-    context.clearRect(0, 0, canvas.width, canvas.height);
-    saveSurface();
+  var clearCanvas = (dir) => {
+    canvasObj[dir].context.clearRect(0, 0,
+      canvasObj[dir].canvas.width, canvasObj[dir].canvas.height);
+    saveSurface(dir);
   };
 
-  var drawStart = (loc) => {
-    context.beginPath();
-    context.moveTo(loc.x, loc.y);
+  var drawStart = (dir, loc) => {
+    var c = canvasObj[dir].context;
+    c.beginPath();
+    c.moveTo(loc.x, loc.y);
   };
 
-  var drawMove = (loc) => {
-    context.lineTo(loc.x, loc.y);
-    context.stroke();
+  var drawMove = (dir, loc) => {
+    var c = canvasObj[dir].context;
+    c.lineTo(loc.x, loc.y);
+    c.stroke();
   };
 
-  var drawEnd = (loc) => {
-    context.lineTo(loc.x, loc.y);
-    context.stroke();
-    context.closePath();
+  var drawEnd = (dir, loc) => {
+    var c = canvasObj[dir].context;
+    c.lineTo(loc.x, loc.y);
+    c.stroke();
+    c.closePath();
   };
 
 
   if (cup.is.mobile()) {
-    $('#qrcode').remove();
+    $('#qrcode-left').remove();
+    $('#qrcode-right').remove();
+    $('#app > .left, #app > .right').hide();
+    $('#app > .center').show();
+    resizeCanvas();
 
     $('#btn-clear').show().on('click', function () {
-      clearCanvas();
-      socket.emit('order', roomName, {type: 'clear'});
+      clearCanvas('center');
+      socket.emit('order', roomName, {
+        type: 'clear',
+        direction: direction
+      });
     });
 
     var lastLoc = {};
-    $canvas.on({
+    canvasObj.center.$canvas.on({
       touchstart: function (e) {
         e.preventDefault();
         var touches = e.originalEvent.touches;
@@ -90,9 +128,13 @@ $(function () {
           y: touches[0].pageY
         };
 
-        saveSurface();
-        drawStart(loc);
-        socket.emit('order', roomName, {type: 'start', loc});
+        saveSurface('center');
+        drawStart('center', loc);
+        socket.emit('order', roomName, {
+          type: 'start',
+          loc: loc,
+          direction: direction
+        });
       },
       touchmove: function (e) {
         e.preventDefault();
@@ -102,25 +144,44 @@ $(function () {
           y: touches[0].pageY
         };
         lastLoc = loc;
-        drawMove(loc);
-        socket.emit('order', roomName, {type: 'move', loc});
+        drawMove('center', loc);
+        socket.emit('order', roomName, {
+          type: 'move',
+          loc: loc,
+          direction: direction
+        });
       },
       touchend: function (e) {
         e.preventDefault();
-        restoreSurface();
-        drawEnd(lastLoc);
-        socket.emit('order', roomName, {type: 'end', loc: lastLoc});
+        restoreSurface('center');
+        drawEnd('center', lastLoc);
+        socket.emit('order', roomName, {
+          type: 'end',
+          loc: lastLoc,
+          direction: direction
+        });
       }
     });
   } else {
-    socket.on('joined', function (msg) {
-      $('#qrcode').hide();
+    socket.on('joined', function (dir) {
+      $('#qrcode-' + dir).hide();
     });
 
     var qrurl = `${location.protocol}//${location.host}${location.pathname}?roomName=${roomName}`;
-    console.log(qrurl);
-    $('#qrcode').qrcode({
-      text: qrurl,
+
+    var qrurlLeft = `${qrurl}&direction=left`;
+    var qrurlRight = `${qrurl}&direction=right`;
+
+    console.log(qrurlLeft);
+    console.log(qrurlRight);
+
+    $('#qrcode-left').qrcode({
+      text: qrurlLeft,
+      size: 200
+    });
+
+    $('#qrcode-right').qrcode({
+      text: qrurlRight,
       size: 200
     });
 
@@ -129,21 +190,22 @@ $(function () {
       switch (ord.type) {
         case 'start':
           saveSurface();
-          drawStart(ord.loc);
+          drawStart(ord.direction, ord.loc);
           break;
         case 'move':
-          drawMove(ord.loc);
+          drawMove(ord.direction, ord.loc);
           break;
         case 'end':
           restoreSurface();
-          drawEnd(ord.loc);
+          drawEnd(ord.direction, ord.loc);
           break;
         case 'clear':
-          clearCanvas();
+          clearCanvas(ord.direction);
           break;
       }
     });
 
+    /*
     $canvas.on({
       mousedown: function (e) {
         e.preventDefault();
@@ -167,5 +229,6 @@ $(function () {
         drawEnd(loc);
       }
     });
+    */
   }
 });

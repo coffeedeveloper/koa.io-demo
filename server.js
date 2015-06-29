@@ -33,9 +33,9 @@ app.io.use(function *(next) {
   console.log('somebody disconnected', this.id);
 });
 
-app.io.route('join', function *(next, room) {
+app.io.route('join', function *(next, room, extend) {
   this.join(room);
-  this.to(room).emit('joined', `${this.id} has join the room:${room}`);
+  this.to(room).emit('joined', extend);
 });
 
 app.io.route('leave', function *(next, room) {
