@@ -104,8 +104,39 @@
 	      socket.emit('order', roomName, dir);
 	    }
 	  });
-	  if (urlParams.guid) {}
+	
+	  var steps = [];
+	  $('#impress .step').each(function (i) {
+	    var id = $(this).attr('id') || 'step-' + (i + 1);
+	    steps.push({
+	      id: id,
+	      html: $(this).html()
+	    });
+	  });
+	
+	  var $preview = $('<div id="preview-slide"></div>');
+	  $('body').append($preview);
+	
+	  $preview.html(steps[1].html);
+	
+	  socket.on('order', function (hash) {
+	    for (var i = 0; i < steps.length; i++) {
+	      var item = steps[i];
+	      if (item.id == hash) {
+	        if (i + 1 == steps.length) {
+	          $preview.html('已经播完了');
+	        } else {
+	          $preview.html(steps[i + 1].html);
+	        }
+	      }
+	    }
+	  });
 	} else {
+	
+	  $(window).on('hashchange', function (e) {
+	    socket.emit('order', roomName, window.location.hash.replace('#/', ''));
+	  });
+	
 	  var slide = impress();
 	  slide.init();
 	  socket.on('joined', function (msg) {
