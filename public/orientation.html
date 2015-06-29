@@ -13,8 +13,9 @@
         width: 80px;
         background: red;
         border-radius: 80px;
+        left: 50%;
+        margin-left: -40px;
         top: 50%;
-        margin-top: -40px;
       }
     </style>
 
@@ -37,6 +38,8 @@
           info += 'alpha: ' + e.alpha;
           log.innerHTML = info;
 
+          console.log(e.beta);
+
           var dir = e.beta < 0 ? 'left' : 'right';
           var p = 0;
 
@@ -44,9 +47,11 @@
           if (x > 1) x = 1;
 
           if (dir == 'left') {
-            ball.style.left = (50 - (50 * p)) + '%';
+            ball.style.bottom = 'auto';
+            ball.style.top = (50 - (50 * x)) + '%';
           } else {
-            ball.style.right = (50 - (50 * p)) + '%';
+            ball.style.top = 'auto';
+            ball.style.bottom = (50 - (50 * x)) + '%';
           }
 
         });
